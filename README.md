@@ -1,6 +1,9 @@
 ## STACK UI Simplification
+This plugin is designed to simplify the editing of STACK Maths related questions by novice authors. You can see more about the  STACK question type here
 
-This Moodle plugin will hide elements of the STACK question editing interface based on configurations in a settings file. It is designed for novice authors of STACK questions who may find the large number of editing options overwhelming.
+https://moodle.org/plugins/qtype_stack
+
+It will hide elements of the question editing interface based on configurations in a settings file. It is designed for novice authors of STACK questions who may find the large number of editing options overwhelming.
 
 The exact elements that are hidden can be configured in the settings file based on the element id. It comes with a set of pre-defined elements. Using the browser element inspector may identify additional elements.
 
@@ -14,7 +17,9 @@ This plugin was created to test the concept of simplifying the STACK editing int
 
 This plugin was written by Marcus Green
 
-For Moodle hosting, custom development and consultancy contact Moodle Partner Catalyst EU (https://www.catalyst-eu.net/).
+For Moodle hosting, custom development and consultancy contact Certified Moodle Partner Catalyst EU (https://www.catalyst-eu.net/).
+
+### The settings page
 
 ![STACK UI (simplification) settings page](./docs/images/stack_ui_settings.png)
 
