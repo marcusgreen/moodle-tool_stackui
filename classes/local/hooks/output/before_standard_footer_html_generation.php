@@ -45,6 +45,60 @@ class before_standard_footer_html_generation {
         if ($pagetype !== "question-type-stack") {
             return;
         }
+
+        $content = "
+        <div id='showhide' class='col-md-9 d-flex flex-wrap align-items-start felement'>
+            <div class='row'>
+                <button class='btn btn-secondary' id='id_showall'>Show all</button>&nbsp;&nbsp;
+                <button class='btn btn-secondary' id='id_simplify'>Simplify</button>
+            </div>
+        </div>
+        ";
+
+        $content .= "<script>
+
+        const btnShowAll = document.getElementById('id_showall');
+        const btnSimplify = document.getElementById('id_simplify');
+
+        const header = document.getElementById('fitem_id_name');
+
+        btnShowAll.addEventListener('click', function(event) {
+        window.location.href = window.location.href;
+            event.preventDefault();
+
+            const url = new URL(window.location.href);
+            url.searchParams.append('showall', 'true');
+            window.location.href = url.href;
+        });
+
+        btnSimplify.addEventListener('click', function(event) {
+        window.location.href = window.location.href;
+            event.preventDefault();
+            const url = new URL(window.location.href);
+            url.searchParams.append('showall', 'false');
+            window.location.href = url.href;
+        });
+        function insertAfter(referenceNode, newNode) {
+            referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+        }
+
+        insertAfter(header, showhide);
+        </script>";
+        $showall = optional_param('showall', '', PARAM_TEXT);
+
+        if ($showall !== 'true') {
+            $content .= self::hide_elements();
+        }
+        $hook->add_html($content);
+
+    }
+    /**
+     * Hide elements with javascript
+     *
+     * @return string
+     */
+    public static function hide_elements(): string {
+        global $DB, $OUTPUT;
         $config = get_config('tool_stackui', 'elementstohide');
         $array = explode(',', $config);
         $trimmedarray = array_map('trim', $array);
@@ -68,13 +122,14 @@ class before_standard_footer_html_generation {
             const ancestor = element.closest('.mb-3');
             ancestor.style.display = 'none';
             </script>";
-
         }
         $msg = 'Some elements are hidden for simplification based on you being in cohort '.get_config('tool_stackui', 'uicohort');
         \core\notification::add($msg, \core\notification::WARNING);
-        $hook->add_html($content);
-
+        return $content;
     }
+
+
+
     /**
      * Check if the user is in the UI cohort
      *
