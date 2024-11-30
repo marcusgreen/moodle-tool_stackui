@@ -35,3 +35,5 @@ $string['settings:elementstohide_text'] = 'Each item represents an editing eleme
 $string['settings:enabled'] = 'Enabled';
 $string['settings:enabled_text'] = 'Enable/Disable the plugin';
 $string['settings:stackuisettings'] = 'STACK Question type UI';
+$string['showall'] = 'Show all';
+$string['simplify'] = 'Simplify';

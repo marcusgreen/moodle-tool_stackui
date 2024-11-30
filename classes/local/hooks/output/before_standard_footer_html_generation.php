@@ -45,48 +45,50 @@ class before_standard_footer_html_generation {
         if ($pagetype !== "question-type-stack") {
             return;
         }
+        xdebug_break();
+        $showall = optional_param('showall', '', PARAM_TEXT);
+        $checkedstatus = "";
+
+        if ($showall == "true") {
+             $checkedstatus = "checked=true";
+             $checkboxlabel = get_string('showall', 'tool_stackui');
+        } else {
+            $checkboxlabel = get_string('showall', 'tool_stackui');
+        }
 
         $content = "
-        <div id='showhide' class='col-md-9 d-flex flex-wrap align-items-start felement'>
-            <div class='row'>
-                <button class='btn btn-secondary' id='id_showall'>Show all</button>&nbsp;&nbsp;
-                <button class='btn btn-secondary' id='id_simplify'>Simplify</button>
-            </div>
+        <div id='id_showhide' class='custom-control custom-switch'>
+            <input type='checkbox' ".$checkedstatus." name='xsetmode' class='custom-control-input' data-initial-value='on'>
+            <span class='custom-control-label'>".$checkboxlabel."</span>
         </div>
         ";
-
         $content .= "<script>
+        var showall ='".$showall."';
+        const cbx_showhide = document.getElementById('id_showhide');
+        const header = document.getElementById('user-notifications');
+        cbx_showhide.addEventListener('click', function(event) {
+        debugger;
 
-        const btnShowAll = document.getElementById('id_showall');
-        const btnSimplify = document.getElementById('id_simplify');
-
-        const header = document.getElementById('fitem_id_name');
-
-        btnShowAll.addEventListener('click', function(event) {
         window.location.href = window.location.href;
+            const url = new URL(window.location.href);
+            if(showall == 'true') {
+               url.searchParams.delete('showall');
+            } else {
+               url.searchParams.append('showall', 'true');
+            }
+            window.location.href = url.href;
             event.preventDefault();
 
-            const url = new URL(window.location.href);
-            url.searchParams.append('showall', 'true');
-            window.location.href = url.href;
         });
 
-        btnSimplify.addEventListener('click', function(event) {
-        window.location.href = window.location.href;
-            event.preventDefault();
-            const url = new URL(window.location.href);
-            url.searchParams.append('showall', 'false');
-            window.location.href = url.href;
-        });
         function insertAfter(referenceNode, newNode) {
             referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
         }
 
-        insertAfter(header, showhide);
+        insertAfter(header, cbx_showhide);
         </script>";
-        $showall = optional_param('showall', '', PARAM_TEXT);
 
-        if ($showall !== 'true') {
+        if ($showall == '') {
             $content .= self::hide_elements();
         }
         $hook->add_html($content);
