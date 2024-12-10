@@ -27,6 +27,7 @@ class before_standard_footer_html_generation {
 
     /**
      * Output items at the end of pages
+     * The Javascript might be migrated to amd at some point
      * @return void
      * @package tool_stackui
      */
@@ -45,7 +46,7 @@ class before_standard_footer_html_generation {
         if ($pagetype !== "question-type-stack") {
             return;
         }
-        xdebug_break();
+        // Showall is from a toggle at the top of the editing form.
         $showall = optional_param('showall', '', PARAM_TEXT);
         $checkedstatus = "";
 
@@ -53,9 +54,10 @@ class before_standard_footer_html_generation {
              $checkedstatus = "checked=true";
              $checkboxlabel = get_string('showall', 'tool_stackui');
         } else {
+            // Should this be set to simplify?.
             $checkboxlabel = get_string('showall', 'tool_stackui');
         }
-
+        // Create the showall toggle at the top of the form.
         $content = "
         <div id='id_showhide' class='custom-control custom-switch'>
             <input type='checkbox' ".$checkedstatus." name='xsetmode' class='custom-control-input' data-initial-value='on'>
@@ -67,7 +69,6 @@ class before_standard_footer_html_generation {
         const cbx_showhide = document.getElementById('id_showhide');
         const header = document.getElementById('user-notifications');
         cbx_showhide.addEventListener('click', function(event) {
-        debugger;
 
         window.location.href = window.location.href;
             const url = new URL(window.location.href);
@@ -87,7 +88,9 @@ class before_standard_footer_html_generation {
 
         insertAfter(header, cbx_showhide);
         </script>";
-
+        if (get_config('tool_stackui', 'monospaceqtext')) {
+            $content .= '<style>#id_questiontext {font-family: Lucida Console, Courier New, monospace;}  </style>'.PHP_EOL;
+        }
         if ($showall == '') {
             $content .= self::hide_elements();
         }

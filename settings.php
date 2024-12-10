@@ -32,7 +32,11 @@ if (is_siteadmin()) {
          get_string('settings:enabled', 'tool_stackui'),
          get_string('settings:enabled_text', 'tool_stackui') , 0));
 
-    $settingspage->add(new admin_setting_configtext('tool_stackui/uicohort',
+         $settingspage->add(new admin_setting_configcheckbox('tool_stackui/monospaceqtext',
+         get_string('settings:monospaceqtext', 'tool_stackui'),
+         get_string('settings:monospaceqtext_text', 'tool_stackui') , 0));
+         $settingspage->add(new admin_setting_configtext('tool_stackui/uicohort',
+
          get_string('settings:cohort', 'tool_stackui'),
          get_string('settings:cohort_text', 'tool_stackui') , 'stacknovice'));
     $formelements = 'fitem_id_defaultmark, fitem_id_idnumber,fitem_id_questiondescription,
@@ -45,7 +49,7 @@ fitem_id_questionsimplify, fitem_id_assumepositive, fitem_id_assumereal,fitem_id
 fitem_id_multiplicationsign, fitem_id_sqrtsign, fitem_id_complexno, fitem_id_inversetrig, fitem_id_logicsymbol,
 fitem_id_matrixparens,id_optionsheader,id_tagsheader';
 
-         $settingspage->add(new admin_setting_configtextarea('tool_stackui/elementstohide',
+     $settingspage->add(new admin_setting_configtextarea('tool_stackui/elementstohide',
          get_string('settings:elementstohide', 'tool_stackui'),
          get_string('settings:elementstohide_text', 'tool_stackui') ,
           $formelements));
