@@ -28,15 +28,17 @@ class before_standard_footer_html_generation {
     /**
      * Output items at the end of pages
      * The Javascript might be migrated to amd at some point
+     *
+     * @param \core\hook\output\before_standard_footer_html_generation $hook The hook instance
      * @return void
-     * @package tool_stackui
      */
     public static function callback(\core\hook\output\before_standard_footer_html_generation $hook): void {
         global $DB, $OUTPUT;
 
-        if (! get_config('tool_stackui', 'enabled')) {
+        if (!get_config('tool_stackui', 'enabled')) {
             return;
         }
+
         if (!self::in_uicohort()) {
             return;
         }
@@ -46,61 +48,92 @@ class before_standard_footer_html_generation {
         if ($pagetype !== "question-type-stack") {
             return;
         }
-        // Showall is from a toggle at the top of the editing form.
-        $showall = optional_param('showall', '', PARAM_TEXT);
-        $checkedstatus = "";
 
-        if ($showall == "true") {
-             $checkedstatus = "checked=true";
-             $checkboxlabel = get_string('showall', 'tool_stackui');
-        } else {
-            // Should this be set to simplify?.
+        $content = self::toggle_checkbox('fitem_id_name', 'Show All');
+        $hook->add_html($content);
+    }
+
+    /**
+     * Creates a toggle checkbox with associated JavaScript functionality
+     *
+     * @param string $elementid The ID of the element to attach the checkbox to
+     * @param string $checkboxlabel The label text for the checkbox
+     * @return string The complete HTML and JavaScript for the toggle checkbox
+     */
+    public static function toggle_checkbox(string $elementid, string $checkboxlabel): string {
+        $showall = optional_param('showall', '', PARAM_TEXT);
+        $checkedstatus = '';
+
+        if ($showall === "true") {
+            $checkedstatus = "checked=true";
             $checkboxlabel = get_string('showall', 'tool_stackui');
         }
-        // Create the showall toggle at the top of the form.
-        $content = "
-        <div id='id_showhide' class='custom-control custom-switch'>
-            <input type='checkbox' ".$checkedstatus." name='xsetmode' class='custom-control-input' data-initial-value='on'>
-            <span class='custom-control-label'>".$checkboxlabel."</span>
-        </div>
-        ";
-        $content .= "<script>
-        var showall ='".$showall."';
-        const cbx_showhide = document.getElementById('id_showhide');
-        const header = document.getElementById('user-notifications');
-        cbx_showhide.addEventListener('click', function(event) {
 
-        window.location.href = window.location.href;
-            const url = new URL(window.location.href);
-            if(showall == 'true') {
-               url.searchParams.delete('showall');
-            } else {
-               url.searchParams.append('showall', 'true');
-            }
-            window.location.href = url.href;
-            event.preventDefault();
+        $html = self::get_checkbox_html($elementid, $checkboxlabel, $checkedstatus);
+        $js = self::get_checkbox_javascript($elementid, $showall);
 
-        });
+        $content = $html . $js;
 
-        function insertAfter(referenceNode, newNode) {
-            referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-        }
-
-        insertAfter(header, cbx_showhide);
-        </script>";
-        if (get_config('tool_stackui', 'monospaceqtext')) {
-            $content .= '<style>#id_questiontext {font-family: Lucida Console, Courier New, monospace;}  </style>'.PHP_EOL;
-        }
-        if ($showall == '') {
+        if ($showall === '') {
             $content .= self::hide_elements();
         }
-        $hook->add_html($content);
 
+        return $content;
     }
+
+    /**
+     * Generates the HTML markup for the checkbox
+     *
+     * @param string $elementid The ID of the element to attach the checkbox to
+     * @param string $checkboxlabel The label text for the checkbox
+     * @param string $checkedstatus The checked status of the checkbox
+     * @return string The HTML markup for the checkbox
+     */
+    private static function get_checkbox_html(string $elementid, string $checkboxlabel, string $checkedstatus): string {
+        return "
+        <div>
+            <div id='cbx_{$elementid}' class='custom-control custom-switch'>
+                <input type='checkbox' {$checkedstatus} name='xsetmode' class='custom-control-input' data-initial-value='on'>
+                <span class='custom-control-label'>{$checkboxlabel}</span>
+            </div>";
+    }
+
+    /**
+     * Generates the JavaScript code for checkbox functionality
+     *
+     * @param string $elementid The ID of the element to attach the JavaScript to
+     * @param string $showall The current show/hide state
+     * @return string The JavaScript code as a string
+     */
+    private static function get_checkbox_javascript(string $elementid, string $showall): string {
+        return "
+        <script>
+            const header = document.getElementById('{$elementid}');
+            const cbx = document.getElementById('cbx_{$elementid}');
+
+            cbx.addEventListener('click', function(event) {
+                const url = new URL(window.location.href);
+                if('{$showall}' === 'true') {
+                    url.searchParams.delete('showall');
+                } else {
+                    url.searchParams.append('showall', 'true');
+                }
+                window.location.href = url.href;
+                event.preventDefault();
+            });
+
+            function insertAfter(referenceNode, newNode) {
+                referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+            }
+
+            insertAfter(header, cbx);
+        </script>";
+    }
+
     /**
      * Hide elements with javascript
      *
-     * @return string
+     * @return string The CSS and JavaScript to hide elements
      */
     public static function hide_elements(): string {
         global $DB, $OUTPUT;
@@ -109,8 +142,9 @@ class before_standard_footer_html_generation {
         $trimmedarray = array_map('trim', $array);
 
         $tohide = array_filter($trimmedarray, function($value) {
-            return $value !== ''; // Remove empty strings only.
+            return $value !== '';
         });
+
         $content = '<style>';
         foreach ($tohide as $element) {
             $content .= PHP_EOL;
@@ -118,9 +152,8 @@ class before_standard_footer_html_generation {
             $content .= 'display:none;'.PHP_EOL;
             $content .= '}'.PHP_EOL;
         }
-
         $content .= '</style>';
-        // The Fix dollars elements are in a different format to other elements.
+
         if (in_array('id_fixdollars', $tohide)) {
             $content .= "<script>
             const element = document.getElementById('id_fixdollars');
@@ -128,36 +161,33 @@ class before_standard_footer_html_generation {
             ancestor.style.display = 'none';
             </script>";
         }
+
         $msg = 'Some elements are hidden for simplification based on you being in cohort '.get_config('tool_stackui', 'uicohort');
         \core\notification::add($msg, \core\notification::WARNING);
         return $content;
     }
 
-
-
     /**
      * Check if the user is in the UI cohort
      *
-     * @param array $tweaks
-     * @return array
-     * @package tool_stackui
+     * @return array Array of cohort records the user belongs to
      */
     public static function in_uicohort(): array {
         global $DB, $USER;
         $incohort = [];
         $uicohort = get_config('tool_stackui', 'uicohort');
         $cache = \cache::make('tool_stackui', 'stackuicache');
+
         if (($incohort = $cache->get('incohort')) === false) {
             $sql = "SELECT * FROM {cohort} co
                     JOIN {cohort_members} cm
                     ON co.id = cm.cohortid
                     WHERE cm.userid = :userid
-                    AND co.name = :uicohort
-                    ";
+                    AND co.name = :uicohort";
             $incohort = $DB->get_records_sql($sql, ['userid' => $USER->id, 'uicohort' => $uicohort]);
             $cache->set('incohort', $incohort);
         }
-        return $incohort;
 
+        return $incohort;
     }
 }
