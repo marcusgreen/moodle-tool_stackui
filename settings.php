@@ -56,7 +56,7 @@ fitem_id_matrixparens,id_optionsheader,id_tagsheader';
     $settingspage->add(new admin_setting_configtext('tool_stackui/qvarheight',
           get_string('settings:qvarheight', 'tool_stackui'),
           get_string('settings:qvarheight_text', 'tool_stackui'),
-          '',PARAM_NUMBER,3)); // Default height of 200px
+          '', PARAM_NUMBER, 3));
 
 
 }
