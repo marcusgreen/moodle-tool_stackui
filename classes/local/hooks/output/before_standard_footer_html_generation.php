@@ -48,8 +48,9 @@ class before_standard_footer_html_generation {
         if ($pagetype !== "question-type-stack") {
             return;
         }
+        $content = self::set_qvar_height();
 
-        $content = self::toggle_checkbox('fitem_id_name', 'Show All');
+        $content .= self::toggle_checkbox('fitem_id_name', 'Show All');
         $hook->add_html($content);
     }
 
@@ -189,5 +190,51 @@ class before_standard_footer_html_generation {
         }
 
         return $incohort;
+    }
+    /**
+     * Creates a replace button with click functionality
+     *
+     * @return string The HTML and JavaScript for the replace button
+     */
+    public static function add_find_replace(): string {
+        xdebug_break();
+        $html = "
+            <div class='mt-2'>
+                <button type='button' id='replace-btn' class='btn btn-secondary'>
+                    Replace
+                </button>
+            </div>";
+
+        $js = "
+            <script>
+                const replaceBtn = document.getElementById('replace-btn');
+                replaceBtn.addEventListener('click', function() {
+                    alert('Hello!');
+                });
+
+            function insertAfter(referenceNode, newNode) {
+                referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+            }
+                debugger;
+            const anchor = document.getElementById('id_questiontext');
+            insertAfter(anchor, replaceBtn);
+            </script>";
+
+        return $html . $js;
+    }
+    private static function set_qvar_height(): string {
+        xdebug_break();
+        $content = "";
+        $qvarheight = get_config('tool_stackui', 'qvarheight');
+        if($qvarheight !== '') {
+        $qvarheight = $qvarheight."em";
+        $content = "
+        <script>
+         var varea = document.getElementById('id_questionvariables');
+         varea.setAttribute('style', 'height: $qvarheight');
+        </script>
+        ";
+        }
+        return $content;
     }
 }

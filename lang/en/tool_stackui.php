@@ -36,5 +36,7 @@ $string['settings:enabled'] = 'Enabled';
 $string['settings:enabled_text'] = 'Enable/Disable the plugin';
 $string['settings:monospaceqtext'] = 'Monospace Question text';
 $string['settings:monospaceqtext_text'] = 'Apply CSS to make the question text monospaced. Only meaningful if plain text area is set in user preferences';
+$string['settings:qvarheight'] = 'Question variables height';
+$string['settings:qvarheight_text'] = 'Set the height in em of the question variables textarea';
 $string['settings:stackuisettings'] = 'STACK Question type UI';
 $string['showall'] = 'Show all';
