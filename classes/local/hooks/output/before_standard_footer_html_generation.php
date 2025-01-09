@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace tool_stackui\local\hooks\output;
+use html_writer;
 use tool_stackui\stackui;
 /**
  * Hook callbacks for tool_stackui
@@ -33,24 +34,58 @@ class before_standard_footer_html_generation {
      * @return void
      */
     public static function callback(\core\hook\output\before_standard_footer_html_generation $hook): void {
-        global $DB, $OUTPUT;
-
-        if (!get_config('tool_stackui', 'enabled')) {
-            return;
-        }
-
-        if (!stackui::in_uicohort()) {
-            return;
-        }
-
-        global $PAGE;
+        global $DB, $OUTPUT, $PAGE;
         $pagetype = $PAGE->pagetype;
         if ($pagetype !== "question-type-stack") {
             return;
         }
-        $content = stackui::set_qvar_height();
-        $content .= stackui::toggle_checkbox('fitem_id_name', 'Show All');
+
+        if (!get_config('tool_stackui', 'enabled')) {
+            return;
+        }
+        $PAGE->requires->js_call_amd('tool_stackui/line_numbers', 'init', ['id_questionvariables']);
+
+        $content = '';
+        //$content = self::add_language_list();
+        if (stackui::in_uicohort()) {
+            $content .= stackui::toggle_checkbox('fitem_id_name', 'Show All');
+        }
+        $content .= stackui::set_qvar_height();
+        $content .= stackui::set_monospace_qtext();
         $hook->add_html($content);
+
+    }
+    public static function add_language_list() {
+        $langs = get_string_manager()->get_list_of_translations();
+        $lang = optional_param('lang', 'en', PARAM_TEXT);
+        $html = html_writer::select($langs,'stack_lang_menu',$lang,'Choose language');
+
+        $html .= "
+                <div class='col-md-9 d-flex flex-wrap align-items-start felement' data-fieldtype='static'>
+                    <div id='id_stack_lang_menu' class='d-flex flex-wrap align-items-center'>
+                    $html.
+                    </div>
+                </div>
+                <script>
+                function insertAfter(referenceNode, newNode) {
+                    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+                }
+                const langmenu = document.getElementById('id_stack_lang_menu');
+                const anchor = document.getElementById('id_updatebutton');
+
+                insertAfter(anchor, langmenu);
+                langmenu.addEventListener('click', function(event) {
+                  const language = event.target.value;
+                  const url = new URL(window.location.href);
+                  url.searchParams.delete('lang');
+                  url.searchParams.append('lang', language);
+                  window.location.href = url.href;
+                  event.preventDefault();
+
+                });
+                </script>;
+        ";
+        return $html;
     }
 
     /**
@@ -59,10 +94,11 @@ class before_standard_footer_html_generation {
      * @return string The HTML and JavaScript for the replace button
      */
     public static function add_find_replace(): string {
-        xdebug_break();
         $html = "
             <div class='mt-2'>
-                <button type='button' id='replace-btn' class='btn btn-secondary'>
+                <button type='button' id='
+
+        replace-btn' class='btn btn-secondary'>
                     Replace
                 </button>
             </div>";
@@ -75,7 +111,7 @@ class before_standard_footer_html_generation {
                 });
 
             function insertAfter(referenceNode, newNode) {
-                referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+                referenceNode.parentNode.insertAfter(newNode, referenceNode.nextSibling);
             }
                 debugger;
             const anchor = document.getElementById('id_questiontext');

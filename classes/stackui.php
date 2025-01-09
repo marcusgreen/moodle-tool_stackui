@@ -112,7 +112,6 @@ class stackui {
         $tohide = array_filter($trimmedarray, function($value) {
             return $value !== '';
         });
-
         $content = '<style>';
         foreach ($tohide as $element) {
             $content .= PHP_EOL;
@@ -129,7 +128,6 @@ class stackui {
             ancestor.style.display = 'none';
             </script>";
         }
-
         $msg = 'Some elements are hidden for simplification based on you being in cohort '.get_config('tool_stackui', 'uicohort');
         \core\notification::add($msg, \core\notification::WARNING);
         return $content;
@@ -168,7 +166,7 @@ class stackui {
         $content = "";
         $qvarheight = get_config('tool_stackui', 'qvarheight');
         if ($qvarheight !== '') {
-            $qvarheight = "$qvarheight.em";
+            $qvarheight = $qvarheight."em";
             $content = "
                 <script>
                 var varea = document.getElementById('id_questionvariables');
@@ -179,5 +177,27 @@ class stackui {
         return $content;
     }
 
+        /**
+     * Sets the height of the question variables textarea field
+     * Gets the configured height from settings and applies it via JavaScript
+     *
+     * @return string JavaScript content to set the height or empty string if no height configured
+     */
+    public static function set_monospace_qtext(): string {
+        $content = "";
+        $monospaceqtext = get_config('tool_stackui', 'monospaceqtext');
+        if ($monospaceqtext == 1) {
+            $content = "
+                <script>
+                var qtext = document.getElementById('id_questiontext');
+                qtext.setAttribute('style', 'font-family: monospace');
+                </script>
+            ";
+        }
+        return $content;
+    }
+    public static function get_language_packs() {
+        $langs = get_string_manager()->get_list_of_translations();
+    }
 
 }

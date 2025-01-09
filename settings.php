@@ -32,7 +32,7 @@ if (is_siteadmin()) {
          get_string('settings:enabled', 'tool_stackui'),
          get_string('settings:enabled_text', 'tool_stackui') , 0));
 
-         $settingspage->add(new admin_setting_configcheckbox('tool_stackui/monospaceqtext',
+    $settingspage->add(new admin_setting_configcheckbox('tool_stackui/monospaceqtext',
          get_string('settings:monospaceqtext', 'tool_stackui'),
          get_string('settings:monospaceqtext_text', 'tool_stackui') , 0));
          $settingspage->add(new admin_setting_configtext('tool_stackui/uicohort',
@@ -53,10 +53,11 @@ fitem_id_matrixparens,id_optionsheader,id_tagsheader';
          get_string('settings:elementstohide', 'tool_stackui'),
          get_string('settings:elementstohide_text', 'tool_stackui') ,
           $formelements));
-    $settingspage->add(new admin_setting_configtext('tool_stackui/qvarheight',
+     /**  $settingspage->add(new admin_setting_configtext('tool_stackui/qvarheight',
           get_string('settings:qvarheight', 'tool_stackui'),
           get_string('settings:qvarheight_text', 'tool_stackui'),
           '', PARAM_NUMBER, 3));
+     **/
 
 
 }

@@ -29,4 +29,9 @@ $callbacks = [
         'callback' => 'tool_stackui\local\hooks\output\before_standard_footer_html_generation::callback',
         'priority' => 0,
     ],
+    [
+        'hook' => core\hook\output\before_standard_head_html_generation::class,
+        'callback' => 'tool_stackui\local\hooks\output\before_standard_head_html_generation::callback',
+        'priority' => 0,
+    ],
 ];
