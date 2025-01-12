@@ -56,6 +56,7 @@ class before_standard_footer_html_generation {
 
     }
     public static function add_language_list() {
+        return "";
         $langs = get_string_manager()->get_list_of_translations();
         $lang = optional_param('lang', 'en', PARAM_TEXT);
         $html = html_writer::select($langs,'stack_lang_menu',$lang,'Choose language');
