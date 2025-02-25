@@ -5,11 +5,15 @@ https://moodle.org/plugins/qtype_stack
 
 It will hide elements of the question editing interface based on configurations in a settings file. It is designed for novice authors of STACK questions who may find the large number of editing options overwhelming. It is possible to toggle for a full view of all fields from within the Question editing interface.
 
+### The question editing page
+
 ![Toggle all fields](./docs/images/stack_show_all_toggle.png)
 
 The exact elements that are hidden can be configured in the settings file based on the element id. It comes with a set of pre-defined elements. Using the browser element inspector may identify additional elements.
 
 The plugin will only apply to users who are in a defined cohort (site wide group). This is defined in the settings file and defaults to the name stacknovice. This cohort must be created separatly for the site for the plugin to work.
+
+### The settings page
 
  View the settings page by visiting Site Administration >Plugins.(/admin/search.php#linkmodules). It can be found in the Admin Tools section.  The plugin is globally disabled on first installation and can be enabled via the Enabled checkbox in settings.
 
@@ -22,8 +26,3 @@ This plugin was created to test the concept of simplifying the STACK editing int
 This plugin was written by Marcus Green
 
 For Moodle hosting, custom development and consultancy contact Certified Moodle Partner Catalyst EU (https://www.catalyst-eu.net/).
-
-### The settings page
-
-
-

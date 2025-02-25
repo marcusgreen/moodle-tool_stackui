@@ -186,7 +186,7 @@ class stackui {
     public static function set_monospace_qtext(): string {
         $content = "";
         $monospaceqtext = get_config('tool_stackui', 'monospaceqtext');
-        if ($monospaceqtext == 1) {
+        if ($monospaceqtext === "1") {
             $content = "
                 <script>
                 var qtext = document.getElementById('id_questiontext');
